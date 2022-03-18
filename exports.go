@@ -108,6 +108,12 @@ func Lookup(fieldPath ...string) (Value, bool) {
 	return configInstance.Lookup(fieldPath...)
 }
 
+func Root() Value {
+	configRWLocker.RLock()
+	defer configRWLocker.RUnlock()
+	return configInstance
+}
+
 func Clear() {
 	configRWLocker.Lock()
 	defer configRWLocker.Unlock()
