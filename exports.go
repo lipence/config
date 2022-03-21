@@ -40,11 +40,6 @@ type Loader interface {
 	Clear()
 }
 
-type Collector interface {
-	Type() string
-	Add(val interface{}, path ...string) (err error)
-}
-
 type Kind uint8
 
 const (

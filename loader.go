@@ -19,16 +19,12 @@ var (
 	ErrPathNotFile     = fmt.Errorf("only accepts single file, but got directory")
 )
 
-type OnLoaderRegister interface {
-	OnRegister() (err error)
-}
-
 var loader Loader
 
 func Use(l Loader) error {
 	loader = l
-	if evt, ok := loader.(OnLoaderRegister); ok {
-		if err := evt.OnRegister(); err != nil {
+	if evt, ok := loader.(interface{ Init() error }); ok {
+		if err := evt.Init(); err != nil {
 			return err
 		}
 	}
@@ -43,7 +39,7 @@ func wrapErrorWithMsgAndPath(err error, path string, msg error) error {
 	return fmt.Errorf("%w: %v (path: %s)", msg, err, path)
 }
 
-func LoadFromPath(path string) (instance Value, err error) {
+func loadFromPath(path string) (instance Value, err error) {
 	var _loader = loader
 	if _loader == nil {
 		return nil, ErrLoaderUndefined
@@ -91,7 +87,7 @@ func LoadFromPath(path string) (instance Value, err error) {
 }
 
 func LoadConfigs(configPath string) error {
-	instance, err := LoadFromPath(configPath)
+	instance, err := loadFromPath(configPath)
 	if err != nil {
 		return err
 	}
