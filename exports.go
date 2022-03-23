@@ -29,7 +29,7 @@ type Value interface {
 	StringList() ([]string, error)
 	Struct() (Iterator, error)
 	Kind() Kind
-	Json() ([]byte, error)
+	Marshal() ([]byte, error)
 }
 
 type Loader interface {
